@@ -22,9 +22,11 @@ label{font-size:13px;margin-bottom:4px;display:block}
 .declaration{margin-top:20px;padding:15px;border:1px solid #ccc;background:#fafafa}
 .submit{text-align:center;margin-top:25px}
 button{background:#0b5ed7;color:#fff;border:none;padding:12px 30px;font-size:15px;border-radius:5px;cursor:pointer}
+button:hover{background:#094bb5}
 .signature-box{max-width:320px;margin-top:10px}
-canvas{border:1px solid #333;width:100%;height:120px}
+canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
 #thankyou{display:none;text-align:center;padding:50px;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.message{margin-top:10px;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -107,6 +109,8 @@ I hereby declare that all the information stated above is true and give consent 
 <label>Signature / Tandatangan *</label>
 <canvas id="signature"></canvas>
 <input type="hidden" name="Signature" id="signatureData" required>
+</div>
+<div style="text-align:center;margin-top:10px;">
 <button type="button" onclick="clearSignature()">Clear Signature</button>
 </div>
 
@@ -114,6 +118,7 @@ I hereby declare that all the information stated above is true and give consent 
 <button type="submit">Submit Health Declaration</button>
 </div>
 
+<div class="message" id="formMessage"></div>
 </div>
 </form>
 
@@ -124,34 +129,95 @@ I hereby declare that all the information stated above is true and give consent 
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
-emailjs.init("e11xX_5IIA36HGfyg");
+emailjs.init("e11xX_5IIA36HGfyg"); // your public key
 
-const canvas=document.getElementById('signature');
-const ctx=canvas.getContext('2d');
-let drawing=false;
-canvas.addEventListener('mousedown',()=>drawing=true);
-canvas.addEventListener('mouseup',()=>{drawing=false;ctx.beginPath()});
-canvas.addEventListener('mousemove',e=>{if(!drawing)return;ctx.lineWidth=2;ctx.lineCap='round';ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY)});
-function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height)}
+// Mobile-friendly signature capture
+const canvas = document.getElementById('signature');
+const ctx = canvas.getContext('2d');
+let drawing = false;
 
-document.getElementById('healthForm').addEventListener('submit',function(e){
- e.preventDefault();
+// Resize canvas for high-DPI screens
+function resizeCanvas() {
+  const ratio = Math.max(window.devicePixelRatio || 1, 1);
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  ctx.scale(ratio, ratio);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
- const now=new Date();
- document.getElementById('SubmissionID').value=
-  'HD-NP01-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0');
- document.getElementById('SubmittedAt').value=now.toLocaleString();
+// Desktop mouse events
+canvas.addEventListener('mousedown', () => drawing = true);
+canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+canvas.addEventListener('mouseout', () => { drawing = false; ctx.beginPath(); });
+canvas.addEventListener('mousemove', draw);
 
- document.getElementById('signatureData').value=canvas.toDataURL();
+// Touch events for mobile
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  drawing = true;
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+});
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  if (!drawing) return;
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+});
+canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
 
- emailjs.send(
-  "service_zdyjwv1",
-  "template_vsfdta8",
-  Object.fromEntries(new FormData(this))
- ).then(()=>{
-  document.getElementById('formPage').style.display='none';
-  document.getElementById('thankyou').style.display='block';
- }).catch(err=>alert('Email failed: '+err));
+// Draw function for mouse
+function draw(e) {
+  if (!drawing) return;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+// Clear signature
+function clearSignature() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Form submission
+document.getElementById('healthForm').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const now = new Date();
+  document.getElementById('SubmissionID').value =
+    'HD-NP01-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+
+    String(now.getDate()).padStart(2,'0')+'-'+
+    String(now.getHours()).padStart(2,'0')+
+    String(now.getMinutes()).padStart(2,'0')+
+    String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('SubmittedAt').value = now.toLocaleString();
+
+  document.getElementById('signatureData').value = canvas.toDataURL();
+
+  emailjs.send(
+    "service_zdyjwv1",
+    "template_vsfdta8",
+    Object.fromEntries(new FormData(this))
+  ).then(()=>{
+    document.getElementById('formPage').style.display='none';
+    document.getElementById('thankyou').style.display='block';
+  }).catch(err=>{
+    const msg = document.getElementById('formMessage');
+    msg.style.color='red';
+    msg.textContent='Failed to send email. Please try again.';
+    console.error("EmailJS error:", err);
+  });
 });
 </script>
 
