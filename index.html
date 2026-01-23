@@ -8,13 +8,14 @@
 body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;padding:20px}
 .container{max-width:900px;margin:auto;background:#fff;padding:30px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
 .header{text-align:center;margin-bottom:25px}
+.header img{max-width:150px;margin-bottom:10px;}
 .header h1{font-size:22px;margin-bottom:5px}
 .header p{font-size:13px;margin:2px 0}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{border:1px solid #ccc;padding:8px;vertical-align:top}
 th{background:#f1f3f5;text-align:center}
 .yesno{display:flex;justify-content:center;gap:10px}
-input,textarea{width:100%;padding:6px;font-size:14px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}
+input,textarea,select{width:100%;padding:6px;font-size:14px;border:1px solid #ccc;border-radius:4px;box-sizing:border-box}
 textarea{min-height:50px}
 .row{display:flex;gap:15px;flex-wrap:wrap;margin-bottom:10px}
 .field{flex:1;min-width:200px}
@@ -38,6 +39,7 @@ canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
 <div class="container" id="formPage">
 
 <div class="header">
+<img src="NEOPETRO LOGO.png" alt="Neopetro Logo">
 <h1>HEALTH DECLARATION FORM / BORANG PENGISYTIHARAN KESIHATAN</h1>
 <p><strong>NEOPETRO SDN BHD (388522-D)</strong></p>
 <p>Document No: NP-01-36 | Edition: 01 | Revision: 01</p>
@@ -102,7 +104,20 @@ I hereby declare that all the information stated above is true and give consent 
 </div>
 <div class="row">
 <div class="field"><label>Date / Tarikh *</label><input type="date" name="Date" required></div>
-<div class="field"><label>Designation / Jawatan</label><input type="text" name="Designation"></div>
+<div class="field"><label>Designation / Jawatan</label>
+<select name="Designation">
+  <option value="">Select</option>
+  <option value="Master">Master</option>
+  <option value="Chief Officer">Chief Officer</option>
+  <option value="Chief Engineer">Chief Engineer</option>
+  <option value="Second Officer">Second Officer</option>
+  <option value="Second Engineer">Second Engineer</option>
+  <option value="Oiler">Oiler</option>
+  <option value="Greaser">Greaser</option>
+  <option value="Able Bodied">Able Bodied</option>
+  <option value="Cook">Cook</option>
+</select>
+</div>
 </div>
 
 <div class="signature-box">
@@ -110,15 +125,15 @@ I hereby declare that all the information stated above is true and give consent 
 <canvas id="signature"></canvas>
 <input type="hidden" name="Signature" id="signatureData" required>
 </div>
+
 <div style="text-align:center;margin-top:10px;">
 <button type="button" onclick="clearSignature()">Clear Signature</button>
-</div>
-
-<div class="submit">
+<br><br>
 <button type="submit">Submit Health Declaration</button>
 </div>
 
 <div class="message" id="formMessage"></div>
+
 </div>
 </form>
 
