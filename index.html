@@ -140,11 +140,10 @@ I hereby declare that all the information stated above is true and give consent 
 <div id="thankyou">
 <h2>Form Submitted Successfully</h2>
 <p>Your health declaration has been submitted and recorded. Respective department will be notified.</p>
-<button onclick="generatePDF()">Download PDF</button>
+<button id="downloadPDF">Download PDF</button>
 <button onclick="location.reload()">Close</button>
 </div>
 
-<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -152,7 +151,7 @@ I hereby declare that all the information stated above is true and give consent 
 <script>
 emailjs.init("e11xX_5IIA36HGfyg");
 
-// Signature capture
+// Signature
 const canvas = document.getElementById('signature');
 const ctx = canvas.getContext('2d');
 let drawing = false;
@@ -194,19 +193,22 @@ document.getElementById('healthForm').addEventListener('submit', function(e){
   });
 });
 
-// Generate PDF from form
-function generatePDF(){
+// Generate PDF from a cloned form
+document.getElementById('downloadPDF').addEventListener('click', function(){
   const { jsPDF } = window.jspdf;
-  const form = document.getElementById('formPage');
+  const form = document.getElementById('formPage').cloneNode(true);
+  form.style.display = 'block';
+  document.body.appendChild(form);
   html2canvas(form).then(canvasImg=>{
-    const imgData=canvasImg.toDataURL('image/png');
-    const pdf=new jsPDF('p','pt','a4');
-    const pdfWidth=pdf.internal.pageSize.getWidth();
-    const pdfHeight=(canvasImg.height * pdfWidth)/canvasImg.width;
+    const imgData = canvasImg.toDataURL('image/png');
+    const pdf = new jsPDF('p','pt','a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvasImg.height * pdfWidth)/canvasImg.width;
     pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);
     pdf.save('Neopetro_Health_Declaration.pdf');
+    document.body.removeChild(form);
   });
-}
+});
 </script>
 
 </body>
