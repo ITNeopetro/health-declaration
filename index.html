@@ -39,7 +39,7 @@ canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
 <div class="container" id="formPage">
 
 <div class="header">
-<img src="https://raw.githubusercontent.com/ITNeopetro/health-declaration/91463d37b8f8542ceb5dafdf8415152382fbc468/NEOPETRO%20LOGO.png" alt="Neopetro Logo">
+<img src="NEOPETRO LOGO.png" alt="Neopetro Logo">
 <h1>HEALTH DECLARATION FORM / BORANG PENGISYTIHARAN KESIHATAN</h1>
 <p><strong>NEOPETRO SDN BHD (388522-D)</strong></p>
 <p>Document No: NP-01-36 | Edition: 01 | Revision: 01</p>
@@ -130,6 +130,8 @@ I hereby declare that all the information stated above is true and give consent 
 <button type="button" onclick="clearSignature()">Clear Signature</button>
 <br><br>
 <button type="submit">Submit Health Declaration</button>
+<br><br>
+<button type="button" onclick="generatePDF()">Generate PDF</button>
 </div>
 
 <div class="message" id="formMessage"></div>
@@ -139,31 +141,22 @@ I hereby declare that all the information stated above is true and give consent 
 
 <div id="thankyou">
 <h2>Form Submitted Successfully</h2>
-<p>
-Your health declaration has been submitted and recorded.<br>
-Respective department will be notified.
-</p>
-
-<button onclick="downloadPDF()" style="margin-top:15px;">Generate PDF</button>
-<br><br>
-<button onclick="closeForm()">Close</button>
+<p>Your health declaration has been submitted and recorded. Respective department will be notified.</p>
+<button onclick="location.reload()">Close</button>
 </div>
 
-<!-- JS Libraries -->
+<!-- Libraries -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 emailjs.init("e11xX_5IIA36HGfyg"); // your public key
 
-let submittedFormData = null;
-
-// Mobile-friendly signature capture
+// Signature capture
 const canvas = document.getElementById('signature');
 const ctx = canvas.getContext('2d');
 let drawing = false;
-
-// Resize canvas for high-DPI screens
 function resizeCanvas() {
   const ratio = Math.max(window.devicePixelRatio || 1, 1);
   canvas.width = canvas.offsetWidth * ratio;
@@ -173,119 +166,50 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Mouse events
-canvas.addEventListener('mousedown', () => drawing = true);
-canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
-canvas.addEventListener('mouseout', () => { drawing = false; ctx.beginPath(); });
-canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mousedown',()=>drawing=true);
+canvas.addEventListener('mouseup',()=>{drawing=false;ctx.beginPath();});
+canvas.addEventListener('mouseout',()=>{drawing=false;ctx.beginPath();});
+canvas.addEventListener('mousemove',draw);
 
-// Touch events
-canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  drawing = true;
-  const touch = e.touches[0];
-  const rect = canvas.getBoundingClientRect();
-  ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-});
-canvas.addEventListener('touchmove', (e) => {
-  e.preventDefault();
-  if (!drawing) return;
-  const touch = e.touches[0];
-  const rect = canvas.getBoundingClientRect();
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-  ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-});
-canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
+canvas.addEventListener('touchstart',(e)=>{e.preventDefault();drawing=true;const touch=e.touches[0];const rect=canvas.getBoundingClientRect();ctx.moveTo(touch.clientX-rect.left,touch.clientY-rect.top);});
+canvas.addEventListener('touchmove',(e)=>{e.preventDefault();if(!drawing)return;const touch=e.touches[0];const rect=canvas.getBoundingClientRect();ctx.lineWidth=2;ctx.lineCap='round';ctx.lineTo(touch.clientX-rect.left,touch.clientY-rect.top);ctx.stroke();ctx.beginPath();ctx.moveTo(touch.clientX-rect.left,touch.clientY-rect.top);});
+canvas.addEventListener('touchend',()=>{drawing=false;ctx.beginPath();});
 
-// Draw function for mouse
-function draw(e) {
-  if (!drawing) return;
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-}
-
-// Clear signature
-function clearSignature() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+function draw(e){if(!drawing)return;ctx.lineWidth=2;ctx.lineCap='round';ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY);}
+function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
 // Form submission
 document.getElementById('healthForm').addEventListener('submit', function(e){
   e.preventDefault();
+  const now=new Date();
+  document.getElementById('SubmissionID').value='HD-NP01-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')+'-'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0')+String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('SubmittedAt').value=now.toLocaleString();
+  document.getElementById('signatureData').value=canvas.toDataURL();
 
-  const now = new Date();
-  document.getElementById('SubmissionID').value =
-    'HD-NP01-'+now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+
-    String(now.getDate()).padStart(2,'0')+'-'+
-    String(now.getHours()).padStart(2,'0')+
-    String(now.getMinutes()).padStart(2,'0')+
-    String(now.getSeconds()).padStart(2,'0');
-  document.getElementById('SubmittedAt').value = now.toLocaleString();
-  document.getElementById('signatureData').value = canvas.toDataURL();
-
-  emailjs.send(
-    "service_zdyjwv1",
-    "template_vsfdta8",
-    Object.fromEntries(new FormData(this))
-  ).then(()=>{
-    submittedFormData = new FormData(document.getElementById('healthForm'));
+  emailjs.send("service_zdyjwv1","template_vsfdta8",Object.fromEntries(new FormData(this)))
+  .then(()=>{
     document.getElementById('formPage').style.display='none';
     document.getElementById('thankyou').style.display='block';
   }).catch(err=>{
-    const msg = document.getElementById('formMessage');
+    const msg=document.getElementById('formMessage');
     msg.style.color='red';
     msg.textContent='Failed to send email. Please try again.';
-    console.error("EmailJS error:", err);
+    console.error("EmailJS error:",err);
   });
 });
 
-// PDF generation
-function generatePDF(formData) {
+// Generate PDF
+function generatePDF(){
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  let y = 20;
-
-  pdf.setFontSize(14);
-  pdf.text("NEOPETRO SDN BHD", 20, y);
-  y += 8;
-  pdf.setFontSize(12);
-  pdf.text("Health Declaration Form", 20, y);
-  y += 12;
-
-  pdf.setFontSize(10);
-  for (const [key, value] of formData.entries()) {
-    if(key !== "Signature") {
-      pdf.text(`${key} : ${value || "-"}`, 20, y);
-      y += 7;
-      if(y > 280) { pdf.addPage(); y = 20; }
-    }
-  }
-
-  const signature = document.getElementById('signature').toDataURL("image/png");
-  pdf.addPage();
-  pdf.text("Signature:", 20, 30);
-  pdf.addImage(signature, "PNG", 20, 40, 100, 40);
-
-  pdf.save("Neopetro_Health_Declaration.pdf");
-}
-
-// Download PDF on button click
-function downloadPDF() {
-  if(!submittedFormData) { alert("No submission data found."); return; }
-  generatePDF(submittedFormData);
-}
-
-// Close button
-function closeForm() {
-  location.reload();
+  const form = document.getElementById('formPage');
+  html2canvas(form).then(canvasImg=>{
+    const imgData=canvasImg.toDataURL('image/png');
+    const pdf=new jsPDF('p','pt','a4');
+    const pdfWidth=pdf.internal.pageSize.getWidth();
+    const pdfHeight=(canvasImg.height * pdfWidth)/canvasImg.width;
+    pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);
+    pdf.save('Neopetro_Health_Declaration.pdf');
+  });
 }
 </script>
 
