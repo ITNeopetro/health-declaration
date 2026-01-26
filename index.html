@@ -193,35 +193,48 @@ document.getElementById('healthForm').addEventListener('submit', function(e){
   });
 });
 
-// Generate PDF with proper A4 and multipage
+// Generate PDF with filled values
 document.getElementById('downloadPDF').addEventListener('click', function(){
   const { jsPDF } = window.jspdf;
-  const form = document.getElementById('formPage').cloneNode(true);
-  form.style.display='block';
-  document.body.appendChild(form);
+  const clone = document.getElementById('formPage').cloneNode(true);
+  clone.style.display='block';
 
-  html2canvas(form, {scale:2}).then(canvasImg=>{
+  // Replace all input, textarea, select, radio with plain text
+  clone.querySelectorAll('input, textarea, select').forEach(el=>{
+    let text='';
+    if(el.type==='radio'){ 
+      if(el.checked) text=el.value; else return;
+    } else {
+      text = el.value;
+    }
+    const span = document.createElement('span');
+    span.style.fontFamily='Arial';
+    span.textContent = text;
+    el.parentNode.replaceChild(span, el);
+  });
+
+  document.body.appendChild(clone);
+  html2canvas(clone,{scale:2}).then(canvasImg=>{
     const imgData = canvasImg.toDataURL('image/png');
     const pdf = new jsPDF('p','pt','a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = canvasImg.width;
-    const imgHeight = canvasImg.height;
-    let heightLeft = imgHeight * (pdfWidth / imgWidth);
+    const pdfHeight = (canvasImg.height * pdfWidth)/canvasImg.width;
+    
+    let heightLeft = pdfHeight;
     let position = 0;
 
-    pdf.addImage(imgData,'PNG',0,position,pdfWidth,heightLeft);
-    heightLeft -= pdfHeight;
-
-    while(heightLeft > 0){
-      position = heightLeft - pdfHeight;
-      pdf.addPage();
-      pdf.addImage(imgData,'PNG',0,position,pdfWidth,heightLeft);
-      heightLeft -= pdfHeight;
+    pdf.addImage(imgData,'PNG',0,position,pdfWidth,pdfHeight);
+    if(heightLeft > pdf.internal.pageSize.getHeight()){
+      while(heightLeft > 0){
+        position = heightLeft - pdf.internal.pageSize.getHeight();
+        pdf.addPage();
+        pdf.addImage(imgData,'PNG',0,-position,pdfWidth,pdfHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+      }
     }
 
     pdf.save('Neopetro_Health_Declaration.pdf');
-    document.body.removeChild(form);
+    document.body.removeChild(clone);
   });
 });
 </script>
