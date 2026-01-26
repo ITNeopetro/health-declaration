@@ -193,18 +193,33 @@ document.getElementById('healthForm').addEventListener('submit', function(e){
   });
 });
 
-// Generate PDF from a cloned form
+// Generate PDF with proper A4 and multipage
 document.getElementById('downloadPDF').addEventListener('click', function(){
   const { jsPDF } = window.jspdf;
   const form = document.getElementById('formPage').cloneNode(true);
-  form.style.display = 'block';
+  form.style.display='block';
   document.body.appendChild(form);
-  html2canvas(form).then(canvasImg=>{
+
+  html2canvas(form, {scale:2}).then(canvasImg=>{
     const imgData = canvasImg.toDataURL('image/png');
     const pdf = new jsPDF('p','pt','a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvasImg.height * pdfWidth)/canvasImg.width;
-    pdf.addImage(imgData,'PNG',0,0,pdfWidth,pdfHeight);
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = canvasImg.width;
+    const imgHeight = canvasImg.height;
+    let heightLeft = imgHeight * (pdfWidth / imgWidth);
+    let position = 0;
+
+    pdf.addImage(imgData,'PNG',0,position,pdfWidth,heightLeft);
+    heightLeft -= pdfHeight;
+
+    while(heightLeft > 0){
+      position = heightLeft - pdfHeight;
+      pdf.addPage();
+      pdf.addImage(imgData,'PNG',0,position,pdfWidth,heightLeft);
+      heightLeft -= pdfHeight;
+    }
+
     pdf.save('Neopetro_Health_Declaration.pdf');
     document.body.removeChild(form);
   });
