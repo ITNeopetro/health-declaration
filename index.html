@@ -21,9 +21,8 @@ textarea{min-height:50px}
 .field{flex:1;min-width:200px}
 label{font-size:13px;margin-bottom:4px;display:block}
 .declaration{margin-top:20px;padding:15px;border:1px solid #ccc;background:#fafafa}
-.submit{text-align:center;margin-top:25px}
 
-/* ✅ BUTTON COLOR UPDATED */
+/* BUTTON COLOR */
 button{
   background:#f8c400;
   color:#000;
@@ -33,9 +32,7 @@ button{
   border-radius:5px;
   cursor:pointer;
 }
-button:hover{
-  background:#e6b800;
-}
+button:hover{background:#e6b800}
 
 .signature-box{max-width:320px;margin-top:10px}
 canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
@@ -44,6 +41,7 @@ canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
 #thankyou button{margin:10px 5px;}
 </style>
 </head>
+
 <body>
 
 <form id="healthForm">
@@ -67,43 +65,71 @@ canvas{border:1px solid #333;width:100%;height:120px;touch-action:none;}
 <th style="width:15%">Yes / No<br>Ya / Tidak</th>
 <th style="width:25%">Remarks</th>
 </tr>
+
 <tr>
 <td>1</td>
 <td>Do you have any cough symptoms, shortness of breath / breathing difficulties, fever, sore-throat, body ache for the last few days?<br><em>Adakah anda mengalami simptom batuk, sesak nafas / kesukaran bernafas, demam, sakit tekak, sakit badan sejak beberapa hari lepas?</em></td>
-<td class="yesno"><label><input type="radio" name="Q1" value="Yes" required> Yes</label><label><input type="radio" name="Q1" value="No"> No</label></td>
+<td class="yesno">
+<label><input type="radio" name="Q1" value="Yes" required> Yes</label>
+<label><input type="radio" name="Q1" value="No"> No</label>
+</td>
 <td><textarea name="Q1_Remarks"></textarea></td>
 </tr>
+
 <tr>
 <td>2</td>
 <td>Do you ever have high blood pressure / heart attacks / diabetes / Asthma?<br><em>Adakah anda pernah mempunyai darah tinggi / sakit jantung / kencing manis / asma?</em></td>
-<td class="yesno"><label><input type="radio" name="Q2" value="Yes" required> Yes</label><label><input type="radio" name="Q2" value="No"> No</label></td>
+<td class="yesno">
+<label><input type="radio" name="Q2" value="Yes" required> Yes</label>
+<label><input type="radio" name="Q2" value="No"> No</label>
+</td>
 <td><textarea name="Q2_Remarks"></textarea></td>
 </tr>
+
 <tr>
 <td>3</td>
 <td>Do you take any form of regular medication? For what health purpose?<br><em>Adakah anda mengambil sebarang bentuk ubat? Untuk tujuan kesihatan apa?</em></td>
-<td class="yesno"><label><input type="radio" name="Q3" value="Yes" required> Yes</label><label><input type="radio" name="Q3" value="No"> No</label></td>
+<td class="yesno">
+<label><input type="radio" name="Q3" value="Yes" required> Yes</label>
+<label><input type="radio" name="Q3" value="No"> No</label>
+</td>
 <td><textarea name="Q3_Remarks"></textarea></td>
 </tr>
+
 <tr>
 <td>4</td>
 <td>When is your last tour of duty?<br><em>Bilakah tugas terakhir anda?</em></td>
-<td colspan="2">From / Dari: <input type="date" name="LastDutyFrom"> To / Sehingga: <input type="date" name="LastDutyTo"></td>
+<td colspan="2">
+From / Dari: <input type="date" name="LastDutyFrom">
+To / Sehingga: <input type="date" name="LastDutyTo">
+</td>
 </tr>
+
 <tr>
 <td>5</td>
 <td>How long is your next tour of duty?<br><em>Tempoh tugas yang akan datang?</em></td>
-<td colspan="2">From / Dari: <input type="date" name="NextDutyFrom"> To / Sehingga: <input type="date" name="NextDutyTo"></td>
+<td colspan="2">
+From / Dari: <input type="date" name="NextDutyFrom">
+To / Sehingga: <input type="date" name="NextDutyTo">
+</td>
 </tr>
+
 <tr>
 <td>6</td>
 <td>Name and Handphone No. of next of kin?<br><em>Nama dan No. Telefon bimbit pewaris</em></td>
-<td colspan="2"><input type="text" name="NOK_Name" placeholder="Name"><br><br><input type="text" name="NOK_Phone" placeholder="Tel"></td>
+<td colspan="2">
+<input type="text" name="NOK_Name" placeholder="Name"><br><br>
+<input type="text" name="NOK_Phone" placeholder="Tel">
+</td>
 </tr>
+
 <tr>
 <td>7</td>
 <td>Weight / Berat badan (Kg) & Height / Ketinggian (Meter)</td>
-<td colspan="2">Weight: <input type="text" name="Weight"> Height: <input type="text" name="Height"></td>
+<td colspan="2">
+Weight: <input type="text" name="Weight">
+Height: <input type="text" name="Height">
+</td>
 </tr>
 </table>
 
@@ -113,24 +139,34 @@ I hereby declare that all the information stated above is true and give consent 
 </div>
 
 <div class="row">
-<div class="field"><label>Name / Nama *</label><input type="text" name="Name" required></div>
-<div class="field"><label>Nationality / Kewarganegaraan *</label><input type="text" name="Nationality" required></div>
+<div class="field">
+<label>Name / Nama *</label>
+<input type="text" name="Name" required>
+</div>
+<div class="field">
+<label>Nationality / Kewarganegaraan *</label>
+<input type="text" name="Nationality" required>
+</div>
 </div>
 
 <div class="row">
-<div class="field"><label>Date / Tarikh *</label><input type="date" name="Date" required></div>
-<div class="field"><label>Designation / Jawatan</label>
+<div class="field">
+<label>Date / Tarikh *</label>
+<input type="date" name="Date" required>
+</div>
+<div class="field">
+<label>Designation / Jawatan</label>
 <select name="Designation">
-  <option value="">Select</option>
-  <option value="Master">Master</option>
-  <option value="Chief Officer">Chief Officer</option>
-  <option value="Chief Engineer">Chief Engineer</option>
-  <option value="Second Officer">Second Officer</option>
-  <option value="Second Engineer">Second Engineer</option>
-  <option value="Oiler">Oiler</option>
-  <option value="Greaser">Greaser</option>
-  <option value="Able Bodied">Able Bodied</option>
-  <option value="Cook">Cook</option>
+<option value="">Select</option>
+<option value="Master">Master</option>
+<option value="Chief Officer">Chief Officer</option>
+<option value="Chief Engineer">Chief Engineer</option>
+<option value="Second Officer">Second Officer</option>
+<option value="Second Engineer">Second Engineer</option>
+<option value="Oiler">Oiler</option>
+<option value="Greaser">Greaser</option>
+<option value="Able Bodied">Able Bodied</option>
+<option value="Cook">Cook</option>
 </select>
 </div>
 </div>
@@ -148,6 +184,7 @@ I hereby declare that all the information stated above is true and give consent 
 </div>
 
 <div class="message" id="formMessage"></div>
+
 </div>
 </form>
 
@@ -163,42 +200,42 @@ I hereby declare that all the information stated above is true and give consent 
 emailjs.init("e11xX_5IIA36HGfyg");
 
 // Signature
-const canvas = document.getElementById('signature');
-const ctx = canvas.getContext('2d');
-let drawing = false;
+const canvas=document.getElementById('signature');
+const ctx=canvas.getContext('2d');
+let drawing=false;
 
-function resizeCanvas() {
-  const ratio = Math.max(window.devicePixelRatio || 1, 1);
-  canvas.width = canvas.offsetWidth * ratio;
-  canvas.height = canvas.offsetHeight * ratio;
-  ctx.scale(ratio, ratio);
+function resizeCanvas(){
+  const ratio=Math.max(window.devicePixelRatio||1,1);
+  canvas.width=canvas.offsetWidth*ratio;
+  canvas.height=canvas.offsetHeight*ratio;
+  ctx.scale(ratio,ratio);
 }
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize',resizeCanvas);
 
 canvas.addEventListener('mousedown',()=>drawing=true);
 canvas.addEventListener('mouseup',()=>{drawing=false;ctx.beginPath();});
 canvas.addEventListener('mouseout',()=>{drawing=false;ctx.beginPath();});
 canvas.addEventListener('mousemove',draw);
 
-canvas.addEventListener('touchstart',(e)=>{
+canvas.addEventListener('touchstart',e=>{
   e.preventDefault();
   drawing=true;
-  const touch=e.touches[0];
-  const rect=canvas.getBoundingClientRect();
-  ctx.moveTo(touch.clientX-rect.left,touch.clientY-rect.top);
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
+  ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
 });
-canvas.addEventListener('touchmove',(e)=>{
+canvas.addEventListener('touchmove',e=>{
   e.preventDefault();
   if(!drawing)return;
-  const touch=e.touches[0];
-  const rect=canvas.getBoundingClientRect();
+  const t=e.touches[0];
+  const r=canvas.getBoundingClientRect();
   ctx.lineWidth=2;
   ctx.lineCap='round';
-  ctx.lineTo(touch.clientX-rect.left,touch.clientY-rect.top);
+  ctx.lineTo(t.clientX-r.left,t.clientY-r.top);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(touch.clientX-rect.left,touch.clientY-rect.top);
+  ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
 });
 canvas.addEventListener('touchend',()=>{drawing=false;ctx.beginPath();});
 
@@ -216,8 +253,8 @@ function clearSignature(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-// Form submission
-document.getElementById('healthForm').addEventListener('submit', function(e){
+// Form submit
+document.getElementById('healthForm').addEventListener('submit',function(e){
   e.preventDefault();
   const now=new Date();
   document.getElementById('SubmissionID').value=
@@ -242,7 +279,7 @@ document.getElementById('healthForm').addEventListener('submit', function(e){
     const msg=document.getElementById('formMessage');
     msg.style.color='red';
     msg.textContent='Failed to send email. Please try again.';
-    console.error("EmailJS error:",err);
+    console.error(err);
   });
 });
 </script>
