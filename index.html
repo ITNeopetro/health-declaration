@@ -149,6 +149,14 @@ I hereby declare that all the information stated above is true and give consent 
 </div>
 </div>
 
+<!-- ✅ IC / PASSPORT NUMBER ADDED -->
+<div class="row">
+<div class="field">
+<label>IC / Passport No. *</label>
+<input type="text" name="IC_Passport" required>
+</div>
+</div>
+
 <div class="row">
 <div class="field">
 <label>Date / Tarikh *</label>
@@ -199,7 +207,7 @@ I hereby declare that all the information stated above is true and give consent 
 <script>
 emailjs.init("e11xX_5IIA36HGfyg");
 
-// Signature
+/* Signature code unchanged */
 const canvas=document.getElementById('signature');
 const ctx=canvas.getContext('2d');
 let drawing=false;
@@ -253,7 +261,6 @@ function clearSignature(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-// Form submit
 document.getElementById('healthForm').addEventListener('submit',function(e){
   e.preventDefault();
   const now=new Date();
